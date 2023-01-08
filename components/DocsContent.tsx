@@ -1,32 +1,83 @@
+import Link from "next/link";
 import { Doc } from "../lib/docs";
 import { MarkdownCodeBlock } from "./MarkdownCodeBlock";
 import { RenderMarkdownHtmlResult } from "./RenderMarkdownHtmlResult";
 
-export const DocsContent = ({ doc, source }: { doc: Doc; source: string }) => {
+export const DocsContent = ({
+  doc,
+  previousDoc,
+  nextDoc,
+}: {
+  doc: Doc;
+  previousDoc: Doc;
+  nextDoc: Doc;
+}) => {
   return (
     <>
-      <div className="docs-content-wrapper">
-        <div className="docs-content">
+      <div className="doc-content-wrapper">
+        <div className="doc-content">
           <RenderMarkdownHtmlResult
-            html={source}
+            html={doc.content ?? ""}
             components={{
               pre: MarkdownCodeBlock,
             }}
           />
         </div>
+
+        <div className="doc-nav-links">
+          <div className="previous">
+            {!!previousDoc && (
+              <>
+                <span className="link-heading">Previous</span>
+                <Link href={`/${previousDoc.link}`}>
+                  {previousDoc.parent}: {previousDoc.title}
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="next">
+            {!!nextDoc && (
+              <>
+                <span className="link-heading">Next</span>
+                <Link href={`/${nextDoc.link}`}>
+                  {nextDoc.parent}: {nextDoc.title}
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
       </div>
       <style jsx>{`
-        .docs-content-wrapper {
+        .doc-content-wrapper {
           margin-left: var(--sidebar-width);
           margin-top: calc(var(--header-height) + var(--spacing));
           margin-bottom: var(--spacing);
         }
 
-        .docs-content {
+        .doc-content {
           margin: 0 auto;
           max-width: 780px;
           padding: 20px;
-          height: 5000px;
+        }
+
+        .doc-nav-links {
+          margin: 0 auto;
+          max-width: 780px;
+          padding: 20px;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .doc-nav-links .link-heading {
+          display: block;
+          opacity: 0.6;
+          font-size: 0.8em;
+          margin-bottom: 2px;
+        }
+
+        .doc-nav-links .next {
+          text-align: right;
         }
       `}</style>
     </>

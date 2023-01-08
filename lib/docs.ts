@@ -9,10 +9,9 @@ export interface Doc {
   link: string;
   id?: string;
   title?: string;
+  parent?: string;
   description?: string;
   content?: string;
-  // isRoot?: boolean;
-  // isExpanded?: boolean;
 }
 
 export interface DocPath {
@@ -115,7 +114,10 @@ export class Docs {
     for (const directoryEntry of directoryEntries) {
       if (directoryEntry.isFile() && /\.(mdx|md)$/.test(directoryEntry.name)) {
         // create doc
-        const doc = this.getDocByPath(directoryEntry.name, directoryPath);
+        const doc = {
+          ...this.getDocByPath(directoryEntry.name, directoryPath),
+          parent: metadata.title,
+        };
         branches.push({
           type: "file",
           ...doc,

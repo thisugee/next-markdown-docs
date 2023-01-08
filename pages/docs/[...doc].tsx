@@ -8,13 +8,13 @@ import { Doc, DocDirectoryBranch, DocPath, Docs } from "../../lib/docs";
 export default function DocPage({
   doc,
   docs,
-  source,
+  previousDoc,
+  nextDoc,
 }: {
   doc: Doc;
   docs: DocDirectoryBranch[];
   previousDoc: Doc;
   nextDoc: Doc;
-  source: string;
 }) {
   return (
     <>
@@ -23,7 +23,7 @@ export default function DocPage({
       </Head>
       <Layout>
         <DocsSidebar docs={docs} />
-        <DocsContent source={source} doc={doc} />
+        <DocsContent doc={doc} previousDoc={previousDoc} nextDoc={nextDoc} />
       </Layout>
     </>
   );
@@ -52,10 +52,11 @@ export async function getStaticProps({ params }: DocPath) {
 
   return {
     props: {
-      doc,
+      doc: {
+        ...doc,
+        content: processedContent.toString(),
+      } as Doc,
       docs: docs.tree.branches,
-      source: processedContent.toString(),
-      markdown: doc.content,
       previousDoc,
       nextDoc,
     },
